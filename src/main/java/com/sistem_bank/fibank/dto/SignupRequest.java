@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class SignupRequest {
     @NotNull(message = "Full name cannot be null")
     @NotEmpty(message = "Full name is required")
-    @Size(min = 3, max = 100, message = "Full name must be between 3 and 100 characters")
+    @Size(min = 3, max = 100, message = "username must be between 3 and 20 characters")
     private String username;
 
 

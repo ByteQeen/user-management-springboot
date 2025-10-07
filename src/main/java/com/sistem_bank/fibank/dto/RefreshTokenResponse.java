@@ -1,5 +1,11 @@
 package com.sistem_bank.fibank.dto;
 
-public class RefreshTokenResponse {
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+public class RefreshTokenResponse {
+    private String accessToken;
+    private String refreshToken;
 }

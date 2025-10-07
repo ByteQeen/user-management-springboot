@@ -14,7 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "roles_seq", sequenceName = "auth.role_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Integer id;
 

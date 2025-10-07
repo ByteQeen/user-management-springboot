@@ -20,8 +20,8 @@ import java.util.Set;
 @EntityListeners (AuditingEntityListener.class)
 public class User {
     @Id
+    @SequenceGenerator(name = "users_seq", sequenceName = "user_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
-    @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "username", nullable = false, unique = true)

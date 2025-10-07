@@ -13,7 +13,7 @@ public class SignupRequest {
     @NotNull(message = "Full name cannot be null")
     @NotEmpty(message = "Full name is required")
     @Size(min = 3, max = 100, message = "Full name must be between 3 and 100 characters")
-    private String fullName;
+    private String username;
 
 
     @NotNull(message = "Email cannot be null")

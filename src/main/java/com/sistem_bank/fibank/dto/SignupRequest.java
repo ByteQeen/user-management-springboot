@@ -27,7 +27,5 @@ public class SignupRequest {
     @NotNull(message = "Confirm password cannot be null")
     @Size(min = 8, message = "Confirm password must be at least 8 characters")
     private String confirmPassword;
-    private boolean termsAccepted;
-    private boolean privacyAccepted;
 }
 

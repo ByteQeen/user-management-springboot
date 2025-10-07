@@ -1,4 +1,8 @@
 package com.sistem_bank.fibank.exceptions;
 
-public class UserNotFFoundException {
+public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String message) {
+        super(message);
+    }
 }
+

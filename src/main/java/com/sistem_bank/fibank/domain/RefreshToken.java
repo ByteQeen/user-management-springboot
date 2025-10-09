@@ -8,13 +8,15 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "refresh_token", schema = "auth")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "token_seq", sequenceName = "auth.refresh_token_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "token_seq")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -31,5 +33,4 @@ public class RefreshToken {
     private User user;
 
     public RefreshToken() {}
-
 }

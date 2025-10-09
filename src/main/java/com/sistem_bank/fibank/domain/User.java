@@ -1,26 +1,29 @@
 package com.sistem_bank.fibank.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "auth")
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 
 //NOTE: @EntityListeners(AuditingEntityListener.class) enable automatic populating
 // of the @CreatedDate and @LastModifiedDate fields when the entity is created or modified
 @EntityListeners (AuditingEntityListener.class)
 public class User {
     @Id
-    @SequenceGenerator(name = "users_seq", sequenceName = "user_seq", allocationSize = 1)
+    @SequenceGenerator(name = "users_seq", sequenceName = "auth.user_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
     private Long id;
 
@@ -35,11 +38,11 @@ public class User {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     @LastModifiedDate
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -47,7 +50,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+   private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RefreshToken> refreshTokens;

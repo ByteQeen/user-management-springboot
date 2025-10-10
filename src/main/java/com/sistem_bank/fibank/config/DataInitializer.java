@@ -2,7 +2,6 @@ package com.sistem_bank.fibank.config;
 
 import com.sistem_bank.fibank.domain.Role;
 import com.sistem_bank.fibank.domain.User;
-import com.sistem_bank.fibank.exceptions.RoleNotFoundException;
 import com.sistem_bank.fibank.repository.RoleRepository;
 import com.sistem_bank.fibank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

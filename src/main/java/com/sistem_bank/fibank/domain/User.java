@@ -18,8 +18,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 
-//NOTE: @EntityListeners(AuditingEntityListener.class) enable automatic populating
-// of the @CreatedDate and @LastModifiedDate fields when the entity is created or modified
+/*NOTE: @EntityListeners(AuditingEntityListener.class) enable automatic populating
+of the @CreatedDate and @LastModifiedDate fields when the entity is created or modified
+ */
 @EntityListeners (AuditingEntityListener.class)
 public class User {
     @Id

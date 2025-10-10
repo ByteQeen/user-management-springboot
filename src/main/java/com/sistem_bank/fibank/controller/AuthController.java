@@ -18,30 +18,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5500")
 public class AuthController {
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
-    private final AccessTokenService accessTokenService;
 
     @PostMapping("/api/auth/refresh")
     public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
-        String jti = refreshTokenService.extractJtiFromToken(refreshToken);
-
-        RefreshToken token = refreshTokenService.findByJti(jti);
-
-        if(token.isRevoked()){
-            log.warn("Refresh token with jti {} has been revoked", token.getJti());
-            return ResponseEntity.status(401).body(new MessageResponse("Refresh Token has been revoked."));
-
-        }
-        if(refreshTokenService.isExpired(token.getJti())) {
-            log.warn("Refresh token with jti {} has expired at {}", token.getJti(), token.getExpirationDate());
-            return ResponseEntity.status(401).body(new MessageResponse("Refresh token has expired"));
-        }
-
-        UserPrincipal userPrincipal = new UserPrincipal(token.getUser());
-        String newAccessToken = accessTokenService.generateToken(userPrincipal);
-        log.info("Issued new access token for user {}", token.getUser().getEmail());
-        return ResponseEntity.ok((new RefreshTokenResponse(newAccessToken, refreshToken)));
+     return new ResponseEntity<>(authService.refresh(request), HttpStatus.OK);
     }
 
 

@@ -68,4 +68,10 @@ public class AuthController {
     public ResponseEntity<String> profile() {
         return new ResponseEntity<>("User profile", HttpStatus.OK);
     }
+
+
+    @GetMapping("/api/admin/users")
+    public ResponseEntity<String> getUsers() {
+        return new ResponseEntity<>("Users", HttpStatus.OK);
+    }
 }

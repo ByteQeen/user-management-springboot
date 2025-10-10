@@ -15,10 +15,12 @@ public class SignupRequest {
     @Size(min = 3, max = 100, message = "username must be between 3 and 20 characters")
     private String username;
 
-
     @NotNull(message = "Email cannot be null")
     @Email(message = "Invalid email address")
     private String email;
+
+    @NotNull(message = "Phone number cannot be null")
+    private String phoneNumber;
 
     @NotNull(message = "Password cannot be null")
     @Size(min = 8, message = "Password must be at least 8 characters")

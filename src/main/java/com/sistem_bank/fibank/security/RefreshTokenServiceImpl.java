@@ -40,32 +40,40 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 
     @Override
     public RefreshToken generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("type", "REFRESH");
+        // create unic JTI
         String jti = UUID.randomUUID().toString();
-        String token= Jwts
-                .builder()
-                .claims()
+
+        //Create JWT token
+        String token = Jwts.builder()
                 .subject(userDetails.getUsername())
                 .id(jti)
-                .expiration(new Date(System.currentTimeMillis()))
+                .claim("type", "REFRESH")
+                .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokenExpirationMs))
-                .and()
                 .signWith(secretKey)
                 .compact();
 
-        //find user to set the user id in the JWT Refresh Token
+        //find user in db
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        return RefreshToken.builder()
+        //create refresh token
+        RefreshToken refreshToken = RefreshToken.builder()
                 .token(token)
                 .jti(jti)
                 .user(user)
-                .expirationDate(LocalDateTime.now().plusSeconds(tokenExpirationMs/1000))
+                .expirationDate(LocalDateTime.now().plusSeconds(tokenExpirationMs / 1000))
                 .revoked(false)
                 .build();
+
+        //save token in db
+        refreshTokenRepository.save(refreshToken);
+        System.out.println("✅ Refresh token saved for user: " + user.getUsername());
+        System.out.println("✅ JTI: " + jti);
+
+        return refreshToken;
     }
+
 
     @Override
     public RefreshToken findByJti(String jti) {
@@ -93,13 +101,18 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         return saved.isRevoked();
     }
 
+    public boolean isRevoked(String jti) {
+        RefreshToken refreshToken = findByJti(jti);
+        return refreshToken.isRevoked();
+    }
+
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         Claims claims = extractAllClaims(token);
-        String email = claims.getSubject();
+        String username = claims.getSubject();
         String jti = claims.getId();
 
-        return (email.equals(userDetails.getUsername()) && !isExpired(token) && !revokeToken(jti));
+        return (username.equals(userDetails.getUsername()) && !isExpired(jti) && !isRevoked(jti));
     }
 
     @Override
@@ -110,7 +123,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 
     @Override
     public void saveRefreshToken(RefreshToken refreshToken) {
-        refreshTokenRepository.save(refreshToken);
+            refreshTokenRepository.save(refreshToken);
+            System.out.println("✅ Refresh token saved for user: " + refreshToken.getUser().getUsername());
+            System.out.println("✅ JTI saved: " + refreshToken.getJti());
     }
 
     @Override

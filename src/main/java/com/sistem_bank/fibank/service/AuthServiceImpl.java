@@ -5,10 +5,12 @@ import com.sistem_bank.fibank.domain.Role;
 import com.sistem_bank.fibank.domain.User;
 import com.sistem_bank.fibank.domain.UserPrincipal;
 import com.sistem_bank.fibank.dto.*;
+import com.sistem_bank.fibank.exceptions.InvalidRefreshTokenException;
 import com.sistem_bank.fibank.exceptions.PasswordMismatchException;
 import com.sistem_bank.fibank.exceptions.RoleNotFoundException;
 import com.sistem_bank.fibank.exceptions.UserAlreadyExistsException;
 import com.sistem_bank.fibank.mapper.UserMapper;
+import com.sistem_bank.fibank.repository.RefreshTokenRepository;
 import com.sistem_bank.fibank.repository.RoleRepository;
 import com.sistem_bank.fibank.repository.UserRepository;
 import com.sistem_bank.fibank.security.AccessTokenService;
@@ -34,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public SignupResponse signUp(SignupRequest signupRequest) {
@@ -91,6 +94,32 @@ public class AuthServiceImpl implements AuthService {
         loginResponse.setUserId(userPrincipal.getId());
 
         return loginResponse;
+    }
+
+    @Override
+    public RefreshTokenResponse refresh(RefreshTokenRequest refreshTokenRequest) {
+        String refreshTokenFromRequest = refreshTokenRequest.getRefreshToken();
+        String jti = refreshTokenService.extractJtiFromToken(refreshTokenFromRequest);
+        RefreshToken refreshToken = refreshTokenService.findByJti(jti);
+
+        UserPrincipal userPrincipal = new UserPrincipal(refreshToken.getUser());
+        if(!refreshTokenService.isTokenValid(refreshTokenFromRequest, userPrincipal)) {
+            log.warn("Refresh token with jti {} is invalid", refreshToken.getJti());
+            throw new InvalidRefreshTokenException("Invalid refresh token");
+        }
+
+        String newAccessToken = accessTokenService.generateToken(userPrincipal);
+        log.info("Issued new access token for user {}", refreshToken.getUser().getUsername());
+
+        RefreshToken newRefreshToken = refreshTokenService.generateRefreshToken(userPrincipal);
+
+        log.info("Issued new refresh token for user {}", refreshToken.getUser().getUsername());
+        refreshTokenRepository.save(newRefreshToken);
+        log.info("New refresh token for user {} was saved", newRefreshToken.getUser().getUsername());
+        refreshTokenService.revokeToken(jti);
+        log.info("Old refresh token for user {} was revoked", refreshToken.getUser().getUsername());
+
+        return new RefreshTokenResponse(newAccessToken, newRefreshToken.getToken());
     }
 }
 

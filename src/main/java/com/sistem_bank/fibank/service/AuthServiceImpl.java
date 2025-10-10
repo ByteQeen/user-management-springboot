@@ -50,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User ();
         user.setUsername (signupRequest.getUsername ());
         user.setEmail (signupRequest.getEmail ());
+        user.setPhoneNumber(signupRequest.getPhoneNumber());
         user.setPassword (passwordEncoder.encode (signupRequest.getPassword ()));
 
         Role defaultRole = roleRepository.findByName ("USER")

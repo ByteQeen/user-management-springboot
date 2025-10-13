@@ -9,7 +9,7 @@ public interface RefreshTokenService {
     RefreshToken generateRefreshToken(UserDetails userDetails);
     RefreshToken findByJti(String jti);
     boolean isExpired(String jti);
-    boolean revokeToken(String jti);
+    void revokeToken(String jti);
     Claims extractAllClaims(String token);
     boolean isTokenValid(String token, UserDetails userDetails);
     String extractJtiFromToken(String token);

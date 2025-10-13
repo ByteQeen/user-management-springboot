@@ -52,15 +52,22 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
 
     @Override
-    public String extractEmailFromToken(String token) {
+    public String extractUsernameFromToken(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getSubject();
+    }
+
+    @Override
+    public Long extractExpirationFromToken(String token){
+        Claims claims = extractAllClaims(token);
+        Date expiration = claims.getExpiration();
+        return expiration.getTime();
     }
 
 
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String email = extractEmailFromToken(token);
+        final String email = extractUsernameFromToken(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 

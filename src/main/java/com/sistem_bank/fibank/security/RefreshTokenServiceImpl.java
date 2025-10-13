@@ -92,13 +92,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
     }
 
     @Override
-    public boolean revokeToken(String jti) {
+    public void revokeToken(String jti) {
         RefreshToken refreshToken = refreshTokenRepository.findByJti(jti)
                 .orElseThrow(()-> new RefreshTokenNotFoundException("Refresh token not found."));
 
         refreshToken.setRevoked(true);
-        RefreshToken saved = refreshTokenRepository.save(refreshToken);
-        return saved.isRevoked();
+        refreshTokenRepository.save(refreshToken);
+
     }
 
     public boolean isRevoked(String jti) {

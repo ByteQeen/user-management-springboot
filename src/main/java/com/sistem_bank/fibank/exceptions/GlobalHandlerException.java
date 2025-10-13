@@ -69,5 +69,27 @@ public class GlobalHandlerException {
         errorMap.put("message", ex.getMessage());
         return new ResponseEntity<>(errorMap, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(BlacklistedTokenException.class)
+    public ResponseEntity<?> handleBlacklistedTokenException(BlacklistedTokenException ex) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", LocalDateTime.now());
+        errorMap.put("status", HttpStatus.UNAUTHORIZED.value());
+        errorMap.put("error", "Unauthorized");
+        errorMap.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorMap, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidTokenTypeException.class)
+    public ResponseEntity<?> handleInvalidTokenTypeException(InvalidTokenTypeException ex) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", LocalDateTime.now());
+        errorMap.put("status", HttpStatus.UNAUTHORIZED.value());
+        errorMap.put("error", "Unauthorized");
+        errorMap.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorMap, HttpStatus.UNAUTHORIZED);
+    }
+
+
 }
 

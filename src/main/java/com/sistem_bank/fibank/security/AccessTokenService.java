@@ -6,7 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface AccessTokenService {
     String generateToken(UserDetails userDetails);
 
-    String extractEmailFromToken(String token);
+    String extractUsernameFromToken(String token);
+    Long extractExpirationFromToken(String token);
 
     boolean validateToken(String token, UserDetails userDetails);
 

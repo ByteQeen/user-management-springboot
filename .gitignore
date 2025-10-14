@@ -26,3 +26,12 @@ generated/
 *.classpath
 *.project
 *.settings/
+
+
+application.properties
+application-dev.properties
+application-prod.properties
+
+keystore.p12
+*.p12
+*.jks

@@ -21,6 +21,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseGet(() -> roleRepository.save(new Role(null, "USER")));d
         Role adminRole = roleRepository.findByName("ADMIN")
                 .orElseGet(() -> roleRepository.save(new Role(null, "ADMIN")));
 
@@ -28,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             User admin = User
                     .builder()
                     .username("admin")
+                    .phoneNumber("0563452345")
                     .email("admin1@gmail.com")
                     .password(passwordEncoder.encode("pass123"))
                     .roles(Set.of(adminRole))
